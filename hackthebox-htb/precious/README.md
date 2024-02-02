@@ -2,7 +2,7 @@
 description: https://app.hackthebox.com/machines/Precious
 ---
 
-# Precious
+# 💎 Precious
 
 ## Enumeration
 

@@ -2,15 +2,15 @@
 description: https://app.hackthebox.com/machines/Jerry
 ---
 
-# Jerry
+# 🐭 Jerry
 
-## Enumeration&#x20;
+## Enumeration
 
 Used to gather usernames, group names, hostnames, network shares and services, IP tables and routing tables, etc.
 
 ### Masscan
 
-A walkthrough was referenced throughout this attack.&#x20;
+A walkthrough was referenced throughout this attack.
 
 Perform enumeration on port scanning in bulk, masscan is faster than nmap but nmap is more verbose. Flag -p listens to a specific port. In this instance, port 80 (http).
 
@@ -112,7 +112,7 @@ nt authority\system
 ```
 {% endcode %}
 
-Search for flags, since we are the authority user on the Windows machine. Change directory to Users, find Admin, search for flags folder.&#x20;
+Search for flags, since we are the authority user on the Windows machine. Change directory to Users, find Admin, search for flags folder.
 
 {% code overflow="wrap" lineNumbers="true" %}
 ```
@@ -226,7 +226,7 @@ Flags for User and Root are identified.
 
 Metasploit Framework is a tool that identifies systematic vulnerabilities on servers and networks. Works with different operating systems and is open-source.
 
-Type the use command to navigate to the tomcat manager upload http. Set the http password and username, rhosts, rport, lhost, and run. Search for flags by changing directory.&#x20;
+Type the use command to navigate to the tomcat manager upload http. Set the http password and username, rhosts, rport, lhost, and run. Search for flags by changing directory.
 
 {% code overflow="wrap" lineNumbers="true" %}
 ```

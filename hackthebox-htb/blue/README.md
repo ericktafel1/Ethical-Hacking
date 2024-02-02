@@ -2,7 +2,7 @@
 description: https://app.hackthebox.com/machines/Blue
 ---
 
-# Blue
+# 🟦 Blue
 
 ## Enumeration
 
@@ -163,7 +163,7 @@ The search command in the msfconsole searches the Metasploit framework for explo
 
 Searchsploit results were unclear to me so I searched in msfconsole to find the exploit we will use.
 
-Using the exploit EternalBlue identified in the search command results for ms17-010 vulnerability. We set the target host IP (rhost) to the Blue box and set local IP (lhost) to my VM tun0 connection from ifconfig.&#x20;
+Using the exploit EternalBlue identified in the search command results for ms17-010 vulnerability. We set the target host IP (rhost) to the Blue box and set local IP (lhost) to my VM tun0 connection from ifconfig.
 
 {% code lineNumbers="true" %}
 ```

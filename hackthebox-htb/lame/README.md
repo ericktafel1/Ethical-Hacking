@@ -2,7 +2,7 @@
 description: https://app.hackthebox.com/machines/Lame
 ---
 
-# Lame
+# 🤓 Lame
 
 ## Enumeration
 
@@ -76,7 +76,7 @@ Nmap done: 1 IP address (1 host up) scanned in 63.77 seconds
 ```
 {% endcode %}
 
-We see that the target box has open FTP port, ssh and Samba SMB (21,22,139,445). and the version is vsftpd 2.3.4. It allows anonymous FTP login.&#x20;
+We see that the target box has open FTP port, ssh and Samba SMB (21,22,139,445). and the version is vsftpd 2.3.4. It allows anonymous FTP login.
 
 Google search shows the Samba 3.0.20 has a 'Username' map script' command execution exploit.
 
@@ -624,7 +624,7 @@ Password:
 ```
 {% endcode %}
 
-Now check netcat listening port for SMB access. We have root access. Navigate to Root and User flags.&#x20;
+Now check netcat listening port for SMB access. We have root access. Navigate to Root and User flags.
 
 {% code lineNumbers="true" %}
 ```
