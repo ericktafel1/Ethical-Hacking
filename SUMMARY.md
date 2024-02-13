@@ -12,4 +12,5 @@
     * [Lessons Learned](hackthebox-htb/precious/lessons-learned.md)
   * [👵 Granny](hackthebox-htb/granny/README.md)
     * [Lessons Learned](hackthebox-htb/granny/lessons-learned.md)
-  * [👄 Nibbles](hackthebox-htb/nibbles.md)
+  * [👄 Nibbles](readme/nibbles/README.md)
+    * [Lessons Learned](readme/nibbles/lessons-learned.md)
