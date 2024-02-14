@@ -10,4 +10,5 @@
 * Dont stop enumerating
 * Gobuster to brute force pages/directories
 * Check config.xml files and other interesting ones (users, admin, etc.)
+* Uploading a file with `<?php system('id'); ?>` in it checks for code execution.
 *
