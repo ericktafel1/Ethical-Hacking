@@ -15,3 +15,4 @@
   * [👄 Nibbles](readme/nibbles/README.md)
     * [Lessons Learned](readme/nibbles/lessons-learned.md)
   * [Bizness](readme/bizness.md)
+  * [CozyHosting](readme/cozyhosting.md)
