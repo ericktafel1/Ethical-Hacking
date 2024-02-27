@@ -49,3 +49,12 @@ Cant access the web page at `https://10.10.11.252/`\
 Edited `/etc/hosts` to include \
 `10.10.11.252            bizness.htb`
 
+
+
+```
+-[Tue Feb 27-13:30:41]-[table@parrot]-
+-[~]$ whatweb http://bizness.htb/
+http://bizness.htb/ [301 Moved Permanently] Country[RESERVED][ZZ], HTTPServer[nginx/1.18.0], IP[10.10.11.252], RedirectLocation[https://bizness.htb/], Title[301 Moved Permanently], nginx[1.18.0]
+https://bizness.htb/ [200 OK] Bootstrap, Cookies[JSESSIONID], Country[RESERVED][ZZ], Email[info@bizness.htb], HTML5, HTTPServer[nginx/1.18.0], HttpOnly[JSESSIONID], IP[10.10.11.252], JQuery, Lightbox, Script, Title[BizNess Incorporated], nginx[1.18.0]
+```
+
