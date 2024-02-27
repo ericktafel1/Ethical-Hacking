@@ -127,3 +127,95 @@ Task Completed
 
 Nginx in nmap but noticed Apahce OFBiz Powers the website at the footer
 
+Nikto
+
+```
+-[Tue Feb 27-14:46:16]-[table@parrot]-
+-[~]$ nikto -h http://bizness.htb
+- Nikto v2.5.0
+---------------------------------------------------------------------------
++ Target IP:          10.10.11.252
++ Target Hostname:    bizness.htb
++ Target Port:        80
++ Start Time:         2024-02-27 14:46:25 (GMT-8)
+---------------------------------------------------------------------------
++ Server: nginx/1.18.0
++ /: The anti-clickjacking X-Frame-Options header is not present. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
++ /: The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type. See: https://www.netsparker.com/web-vulnerability-scanner/vulnerabilities/missing-content-type-header/
++ Root page / redirects to: https://bizness.htb/
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ 7962 requests: 0 error(s) and 2 item(s) reported on remote host
++ End Time:           2024-02-27 14:56:51 (GMT-8) (626 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested
+
+```
+
+Ffuf
+
+```
+-[Tue Feb 27-15:03:47]-[table@parrot]-
+-[~]$ ffuf -w /usr/share/dirb/wordlists/common.txt -u http://bizness.htb/FUZZ -t 50 -mc 200
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v2.0.0-dev
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://bizness.htb/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/dirb/wordlists/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 50
+ :: Matcher          : Response status: 200
+________________________________________________
+
+:: Progress: [4614/4614] :: Job [1/1] :: 639 req/sec :: Duration: [0:00:07] :: Errors: 0 ::
+
+
+```
+
+Wfuzz
+
+```
+Total time: 34.83259
+Processed Requests: 4614
+Filtered Requests: 0
+Requests/sec.: 132.4621
+
+```
+
+Dirb
+
+```
+-[Tue Feb 27-15:00:35]-[table@parrot]-
+-[~]$ dirb http://bizness.htb /usr/share/dirb/wordlists/common.txt  -f
+
+-----------------
+DIRB v2.22    
+By The Dark Raver
+-----------------
+
+START_TIME: Tue Feb 27 15:00:43 2024
+URL_BASE: http://bizness.htb/
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+OPTION: Fine tunning of NOT_FOUND detection
+
+-----------------
+
+GENERATED WORDS: 4612                                                          
+
+---- Scanning URL: http://bizness.htb/ ----
+                                                                                                                            
+-----------------
+END_TIME: Tue Feb 27 15:06:26 2024
+DOWNLOADED: 4612 - FOUND: 0
+
+```
