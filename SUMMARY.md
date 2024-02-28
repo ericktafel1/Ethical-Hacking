@@ -14,5 +14,6 @@
     * [Lessons Learned](hackthebox-htb/granny/lessons-learned.md)
   * [👄 Nibbles](readme/nibbles/README.md)
     * [Lessons Learned](readme/nibbles/lessons-learned.md)
-  * [Bizness](readme/bizness.md)
+  * [🐵 Bizness](readme/bizness/README.md)
+    * [Lessons Learned](readme/bizness/lessons-learned.md)
   * [CozyHosting](readme/cozyhosting.md)

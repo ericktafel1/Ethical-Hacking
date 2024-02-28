@@ -705,3 +705,5 @@ root@Nibbles:~# cat root.txt
 cat root.txt
 c4e3ffb07d835f8e9e0b892edade5730
 ```
+
+Root flag = <mark style="background-color:green;">c4e3ffb07d835f8e9e0b892edade5730</mark>
