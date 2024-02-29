@@ -57,3 +57,15 @@ Finished
 ===============================================================
 
 ```
+
+whatweb
+
+```
+-[Wed Feb 28-15:57:13]-[table@parrot]-
+-[~]$ whatweb http://cozyhosting.htb/
+http://cozyhosting.htb/ [200 OK] Bootstrap, Content-Language[en-US], Country[RESERVED][ZZ], Email[info@cozyhosting.htb], HTML5, HTTPServer[Ubuntu Linux][nginx/1.18.0 (Ubuntu)], IP[10.10.11.230], Lightbox, Script, Title[Cozy Hosting - Home], UncommonHeaders[x-content-type-options], X-Frame-Options[DENY], X-XSS-Protection[0], nginx[1.18.0]
+
+```
+
+Attempting to login to the web portal using BurpSuite Intruder tab.
+
