@@ -188,3 +188,15 @@ Another promising exploit website
 
 Exploit is for a router.
 
+There is a Whitelabel Error page, meaning no explicit mapping for /error. Researching this further.
+
+The Whitelabel error parge is a result of the websites structure, by default Spring Boot will scan the components below your main application class.\
+As of Spring Boot 2.0.0.RELEASE the default prefix for all endpoints is /actuator
+
+Let's check that url:
+
+<figure><img src="../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+
+We see sessions
+
+<figure><img src="../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
