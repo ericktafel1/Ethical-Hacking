@@ -40,13 +40,13 @@ Port 80 is open with Microsoft IIS httpd 6.0 identified as the web server. As th
 
 Upon visiting the IP address in a browser, we see a web page under construction:&#x20;
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p>IIS Under Construction</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption><p>IIS Under Construction</p></figcaption></figure>
 
 ### Vulnerability Assessment
 
 Exploit Database resulted in 11 known exploits for the Microsoft IIS 6.0 vulnerability:
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption><p>exploit-db for MS IIS 6.0</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption><p>exploit-db for MS IIS 6.0</p></figcaption></figure>
 
 Metasploit resulted in one exploit for this vulnerability so we will start with the one exploit first.
 

@@ -16,4 +16,5 @@
     * [Lessons Learned](readme/nibbles/lessons-learned.md)
   * [🐵 Bizness](readme/bizness/README.md)
     * [Lessons Learned](readme/bizness/lessons-learned.md)
-  * [CozyHosting](readme/cozyhosting.md)
+  * [💺 CozyHosting](readme/cozyhosting/README.md)
+    * [Lessons Learned](readme/cozyhosting/lessons-learned.md)
